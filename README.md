@@ -7,6 +7,7 @@ The following demo is
 * [Run Locally](#run-locally)
 * [Deploy to TAS4K8S - Source Artifact Push](#deploy-to-tas4k8s---source-artifact-push)
 * [Deploy to TAS4K8S - Source Code Only](#deploy-to-tas4k8s---source-code-only)
+* [Using PivotalMySQLWeb](#using-pivotalmysqlweb)
 
 ## Run Locally 
 
@@ -338,8 +339,148 @@ memory usage:   1024M
 #0   running   2020-06-04T00:30:52Z   0.0%   0 of 1G   0 of 1G
 ```
 
+Verify application is running as follows
+
+```bash
+ cf apps
+Getting apps in org system / space development as admin...
+OK
+
+name                      requested state   instances   memory   disk   urls
+spring-book-service-api   started           1/1         1G       1G     spring-book-service-api.apps.tas.lab.pasapples.me
+```
+
+```http request
+$ http http://spring-book-service-api.apps.tas.lab.pasapples.me/api/book/1
+HTTP/1.1 200 OK
+content-type: application/json
+date: Thu, 04 Jun 2020 00:39:56 GMT
+server: istio-envoy
+transfer-encoding: chunked
+x-envoy-upstream-service-time: 277
+
+{
+    "author": "Peter Armstrong",
+    "id": 1,
+    "title": "Flexible Rails - Pas"
+}
+```
+
 ## Deploy to TAS4K8S - Source Code Only
 
+In order to deploy from source code only we have to move the manifest.yaml entry to a new name so CF CLI doesn't pick it up as shown below.
+
+```bash
+$ mv manifest.yaml manifest-ARTIFACT.yaml
+```
+
+To deploy using just the source code we would use a command as follows. This will be slower as kpack will need to download all the maven dependencies before it can build the container which the java buildpack will automatically do this for us
+
+```bash
+$ cf push source-spring-book-service-api -p ./ -m 1g -i 1
+...
+
+Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/2.11.0/jackson-module-parameter-names-2.11.0.jar (9.3 kB at 2.5 kB/s)
+   Downloading from central: https://repo.maven.apache.org/maven2/org/springdoc/springdoc-openapi-webmvc-core/1.2.32/springdoc-openapi-webmvc-core-1.2.32.jar
+
+
+Waiting for app to start...
+
+name:                source-spring-book-service-api
+requested state:     started
+isolation segment:   placeholder
+routes:              source-spring-book-service-api.apps.tas.lab.pasapples.me
+last uploaded:       Thu 04 Jun 10:54:18 AEST 2020
+stack:
+buildpacks:
+
+type:           web
+instances:      1/1
+memory usage:   1024M
+     state     since                  cpu    memory    disk      details
+#0   running   2020-06-04T00:54:21Z   0.0%   0 of 1G   0 of 1G
+
+```
+
+Test the application as follows.
+
+```http request
+$ http http://source-spring-book-service-api.apps.tas.lab.pasapples.me/api/book/1
+HTTP/1.1 200 OK
+content-type: application/json
+date: Thu, 04 Jun 2020 00:57:02 GMT
+server: istio-envoy
+transfer-encoding: chunked
+x-envoy-upstream-service-time: 365
+
+{
+    "author": "Peter Armstrong",
+    "id": 1,
+    "title": "Flexible Rails - Pas"
+}
+```
+
+## Using PivotalMySQLWeb
+
+In order to verify we are using our Bound MySQL service we can use PivotalMySQLWeb application. To deploy this follow the steps at the GitHub project as follows
+
+https://github.com/pivotal-cf/PivotalMySQLWeb
+
+The manifest.yaml would like as follows to use the service we created above.
+
+```yaml
+---
+applications:
+- name: pivotal-mysqlweb
+  memory: 1024M
+  instances: 1
+  path: ./target/PivotalMySQLWeb-1.0.0-SNAPSHOT.jar
+  services:
+    - mariadb-svc
+```
+
+Deploy as follows.
+
+```bash
+$ cf push -f manifest-tas4k8s-minibroker.yaml
+Pushing from manifest to org system / space development as admin...
+Using manifest file /Users/papicella/piv-projects/PivotalMySQLWeb/manifest-tas4k8s-minibroker.yaml
+Getting app info...
+Creating app with these attributes...
++ name:        pivotal-mysqlweb
+  path:        /Users/papicella/pivotal/DemoProjects/spring-starter/pivotal/PivotalMySQLWeb/target/PivotalMySQLWeb-1.0.0-SNAPSHOT.jar
++ instances:   1
++ memory:      1G
+  services:
++   mariadb-svc
+  routes:
++   pivotal-mysqlweb.apps.tas.lab.pasapples.me
+
+Creating app pivotal-mysqlweb...
+...
+
+   Build successful
+
+Waiting for app to start...
+
+name:                pivotal-mysqlweb
+requested state:     started
+isolation segment:   placeholder
+routes:              pivotal-mysqlweb.apps.tas.lab.pasapples.me
+last uploaded:       Thu 04 Jun 11:06:18 AEST 2020
+stack:
+buildpacks:
+
+type:           web
+instances:      1/1
+memory usage:   1024M
+     state     since                  cpu    memory    disk      details
+#0   running   2020-06-04T01:06:22Z   0.0%   0 of 1G   0 of 1G
+``` 
+
+To access the default username is "**admin**" and the default password is "**cfmysqlweb**"
+
+![alt tag](https://i.ibb.co/0tkn9QB/tsl-book-service-tas4k8s-2.png)
 
 <hr size=2 />
 Pas Apicella [pasa at vmware.com] is an Advisory Application Platform Architect at VMware APJ 
