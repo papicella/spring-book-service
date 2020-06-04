@@ -1,14 +1,26 @@
 # Spring Book API - TAS4K8s demo
 
-The following demo is 
+The following demo is spring boot API being deployed to TAS4K8s (https://network.pivotal.io/products/tas-for-kubernetes/). It is assumed you have TAS4K8s running on your K8s cluster and have targeted the API endpoint and logged in as per below
+
+```bash
+$ cf target
+api endpoint:   https://api.tas.lab.pasapples.me
+api version:    2.150.0
+user:           admin
+org:            system
+space:          development
+```
 
 ## Table of Contents
 
 * [Run Locally](#run-locally)
+* [Create Service Broker](#create-service-broker)
+* [Create Service](#create-service)
 * [Deploy to TAS4K8S - Source Artifact Push](#deploy-to-tas4k8s---source-artifact-push)
 * [Deploy to TAS4K8S - Source Code Only](#deploy-to-tas4k8s---source-code-only)
 * [Using PivotalMySQLWeb](#using-pivotalmysqlweb)
 
+NOTE: The following steps assume you 
 ## Run Locally 
 
 Clone or Fork repository as follows.
