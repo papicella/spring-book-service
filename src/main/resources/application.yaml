@@ -1,3 +1,11 @@
+spring:
+  application:
+    name: spring-book-service
+  jpa:
+    hibernate:
+      ddl-auto: create
+      use-new-id-generator-mappings: false
+    show-sql: true
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

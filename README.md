@@ -190,6 +190,154 @@ mariadb-svc   mariadb   10-3-22                create succeeded   minibroker
 
 ## Deploy to TAS4K8S - Source Artifact Push
 
+We should already have a packaged artifact as per a previous step that packaged JAR files exists as shown below
+
+```bash
+$ ls -la ./target/spring-book-service-0.0.1-SNAPSHOT.jar
+-rw-r--r--  1 papicella  staff  48342891 Jun  4 10:22 ./target/spring-book-service-0.0.1-SNAPSHOT.jar
+
+```
+
+Inspect the "**manifest.yaml**" file to see what our deployment will look like for TAS4K8s. We are referencing the service "**mariadb-svc**" as per above
+
+```yaml
+---
+applications:
+  - name: spring-book-service-api
+    memory: 1024M
+    instances: 1
+    path: ./target/spring-book-service-0.0.1-SNAPSHOT.jar
+    services:
+      - mariadb-svc
+```
+
+Deploy to TAS4K8s as shown below using "**cf push**"
+
+```bash
+$ cf push -f manifest.yaml
+Pushing from manifest to org system / space development as admin...
+Using manifest file /Users/papicella/piv-projects/TAS4K8s/spring-book-service/manifest.yaml
+Getting app info...
+Creating app with these attributes...
++ name:        spring-book-service-api
+  path:        /Users/papicella/pivotal/DemoProjects/spring-starter/pivotal/TAS4K8s/spring-book-service/target/spring-book-service-0.0.1-SNAPSHOT.jar
++ instances:   1
++ memory:      1G
+  services:
++   mariadb-svc
+  routes:
++   spring-book-service-api.apps.tas.lab.pasapples.me
+
+Creating app spring-book-service-api...
+Mapping routes...
+Binding services...
+Comparing local files to remote cache...
+Packaging files to upload...
+Uploading files...
+ 35.96 MiB / 35.96 MiB [====================================================================================================================================================================================================================] 100.00% 15s
+
+Waiting for API to complete processing files...
+
+Staging app and tracing logs...
+   6 of 13 buildpacks participating
+   org.cloudfoundry.openjdk                   v1.2.14
+   org.cloudfoundry.jvmapplication            v1.1.12
+   org.cloudfoundry.tomcat                    v1.3.18
+   org.cloudfoundry.springboot                v1.2.13
+   org.cloudfoundry.distzip                   v1.1.12
+   org.cloudfoundry.springautoreconfiguration v1.1.11
+   Previous image with name "harbor.lab.pasapples.me/library/6aa9e3df-3bb4-40a0-9041-41c430f2780d" not found
+
+   Cloud Foundry OpenJDK Buildpack v1.2.14
+   OpenJDK JRE 11.0.6: Contributing to layer
+       Downloading from https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.6%!B(MISSING)10/OpenJDK11U-jre_x64_linux_hotspot_11.0.6_10.tar.gz
+       Verifying checksum
+       Expanding to /layers/org.cloudfoundry.openjdk/openjdk-jre
+       Writing JAVA_HOME to shared
+       Writing MALLOC_ARENA_MAX to shared
+       Writing .profile.d/active-processor-count
+   Java Security Properties v1.2.14: Contributing to layer
+       Writing JAVA_OPTS to launch
+   Security Provider Configurer v1.2.14: Contributing to layer
+       Writing .profile.d/security-provider-classpath
+       Writing .profile.d/security-provider-configurer
+   Link-Local DNS v1.2.14: Contributing to layer
+       Writing .profile.d/link-local-dns
+   JVMKill Agent 1.16.0: Contributing to layer
+       Downloading from https://java-buildpack.cloudfoundry.org/jvmkill/bionic/x86_64/jvmkill-1.16.0-RELEASE.so
+       Verifying checksum
+       Copying to /layers/org.cloudfoundry.openjdk/jvmkill
+       Writing JAVA_OPTS to shared
+   Class Counter v1.2.14: Contributing to layer
+   Memory Calculator 4.0.0: Contributing to layer
+       Downloading from https://java-buildpack.cloudfoundry.org/memory-calculator/bionic/x86_64/memory-calculator-4.0.0.tgz
+       Verifying checksum
+       Set $BPL_HEAD_ROOM to configure. Default 0
+       Set $BPL_LOADED_CLASS_COUNT to configure. Default 35%!!(MISSING)o(MISSING)f classes
+       Set $BPL_THREAD_COUNT to configure. Default 250
+       Expanding to /layers/org.cloudfoundry.openjdk/memory-calculator
+       Writing .profile.d/memory-calculator
+
+   Cloud Foundry JVM Application Buildpack v1.1.12
+   Executable JAR: Contributing to layer
+       Writing CLASSPATH to shared
+   Process types:
+   executable-jar: java -cp $CLASSPATH $JAVA_OPTS org.springframework.boot.loader.JarLauncher
+   task:           java -cp $CLASSPATH $JAVA_OPTS org.springframework.boot.loader.JarLauncher
+   web:            java -cp $CLASSPATH $JAVA_OPTS org.springframework.boot.loader.JarLauncher
+
+   Cloud Foundry Spring Boot Buildpack v1.2.13
+   Spring Boot 2.3.1.BUILD-SNAPSHOT: Contributing to layer
+       Writing CLASSPATH to shared
+   5 application slices
+   Process types:
+   spring-boot: java -cp $CLASSPATH $JAVA_OPTS com.example.springbookservice.SpringBookServiceApplication
+   task:        java -cp $CLASSPATH $JAVA_OPTS com.example.springbookservice.SpringBookServiceApplication
+   web:         java -cp $CLASSPATH $JAVA_OPTS com.example.springbookservice.SpringBookServiceApplication
+
+   Cloud Foundry Spring Auto-reconfiguration Buildpack v1.1.11
+   Spring Auto-reconfiguration 2.11.0: Contributing to layer
+       Downloading from https://repo.spring.io/release/org/cloudfoundry/java-buildpack-auto-reconfiguration/2.11.0.RELEASE/java-buildpack-auto-reconfiguration-2.11.0.RELEASE.jar
+       Verifying checksum
+       Copying to /layers/org.cloudfoundry.springautoreconfiguration/auto-reconfiguration
+       Writing CLASSPATH to launch
+   Adding layer 'launcher'
+   Adding layer 'org.cloudfoundry.openjdk:class-counter'
+   Adding layer 'org.cloudfoundry.openjdk:java-security-properties'
+   Adding layer 'org.cloudfoundry.openjdk:jvmkill'
+   Adding layer 'org.cloudfoundry.openjdk:link-local-dns'
+   Adding layer 'org.cloudfoundry.openjdk:memory-calculator'
+   Adding layer 'org.cloudfoundry.openjdk:openjdk-jre'
+   Adding layer 'org.cloudfoundry.openjdk:security-provider-configurer'
+   Adding layer 'org.cloudfoundry.jvmapplication:executable-jar'
+   Adding layer 'org.cloudfoundry.springboot:spring-boot'
+   Adding layer 'org.cloudfoundry.springautoreconfiguration:auto-reconfiguration'
+   Adding 6/6 app layer(s)
+   Adding layer 'config'
+   *** Images (sha256:3b92cac4db3d826b790062814e8a2e54aa9ed1d8b16ac29a2196b895058f52d1):
+   harbor.lab.pasapples.me/library/6aa9e3df-3bb4-40a0-9041-41c430f2780d
+   harbor.lab.pasapples.me/library/6aa9e3df-3bb4-40a0-9041-41c430f2780d:b1.20200604.002942
+   Adding cache layer 'org.cloudfoundry.jvmapplication:executable-jar'
+   Adding cache layer 'org.cloudfoundry.springboot:spring-boot'
+   Build successful
+
+Waiting for app to start...
+
+name:                spring-book-service-api
+requested state:     started
+isolation segment:   placeholder
+routes:              spring-book-service-api.apps.tas.lab.pasapples.me
+last uploaded:       Thu 04 Jun 10:30:47 AEST 2020
+stack:
+buildpacks:
+
+type:           web
+instances:      1/1
+memory usage:   1024M
+     state     since                  cpu    memory    disk      details
+#0   running   2020-06-04T00:30:52Z   0.0%   0 of 1G   0 of 1G
+```
+
 ## Deploy to TAS4K8S - Source Code Only
 
 
