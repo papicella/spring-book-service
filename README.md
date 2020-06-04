@@ -11,6 +11,12 @@ org:            system
 space:          development
 ```
 
+## Prerequisites
+
+* CF CLI installed - https://github.com/cloudfoundry/cli
+* helm3 installed - https://helm.sh/docs/intro/install/
+* TAS4K8s installed - https://network.pivotal.io/products/tas-for-kubernetes/
+
 ## Table of Contents
 
 * [Run Locally](#run-locally)
