@@ -20,7 +20,6 @@ space:          development
 * [Deploy to TAS4K8S - Source Code Only](#deploy-to-tas4k8s---source-code-only)
 * [Using PivotalMySQLWeb](#using-pivotalmysqlweb)
 
-NOTE: The following steps assume you 
 ## Run Locally 
 
 Clone or Fork repository as follows.
