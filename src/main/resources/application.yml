@@ -9,7 +9,3 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-
----
-spring:
-  profiles: cloud

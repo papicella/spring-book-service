@@ -5,6 +5,6 @@ applications:
     instances: 1
     path: ./target/spring-book-service-0.0.1-SNAPSHOT.jar
     services:
-      - mariadb-svc
+      - pas-mysql
     env:
       SPRING_PROFILES_ACTIVE: cloud

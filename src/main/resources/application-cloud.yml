@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: spring-book-service
@@ -7,6 +8,8 @@ spring:
       use-new-id-generator-mappings: false
       database-platform: org.hibernate.dialect.MySQL55Dialect
     show-sql: true
+  datasource:
+    url:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
