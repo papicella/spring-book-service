@@ -6,3 +6,6 @@ applications:
     path: ./target/spring-book-service-0.0.1-SNAPSHOT.jar
     services:
       - mariadb-svc
+    env:
+      SPRING_PROFILES_ACTIVE: cloud
+      JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 11.+}}'
