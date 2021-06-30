@@ -3,7 +3,7 @@
 version: 2.1
 orbs:
   snyk: snyk/snyk@0.1.0
-  
+
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-and-test:  
@@ -24,7 +24,7 @@ jobs:
       - snyk/scan:
           fail-on-issues: false
           monitor-on-build: false
-          severity-threshold: high
+          severity-threshold: medium
           token-variable: SNYK_TOKEN
 
 workflows:
