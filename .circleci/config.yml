@@ -24,7 +24,7 @@ jobs:
       - snyk/scan:
           fail-on-issues: false
           monitor-on-build: false
-          severity-threshold: high
+          severity-threshold: low
           token-variable: SNYK_TOKEN
 
 workflows:
